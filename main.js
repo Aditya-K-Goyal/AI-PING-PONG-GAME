@@ -1,8 +1,9 @@
-
 /*created by prashant shukla */
 
 var paddle2 =10,paddle1=10;
-
+rightWristX = "";
+rightWristY ="";
+rightWristscore="";
 var paddle1X = 10,paddle1Height = 110;
 var paddle2Y = 685,paddle2Height = 70;
 
@@ -28,6 +29,18 @@ function setup(){
   video.size(700,600);
   video.hide();
   poseNet = ml5.poseNet(video , modelLoaded);
+  poseNet.on('pose',gotposes);
+}
+function gotposes(results)
+{
+  if(results.length > 0)
+  {
+    rightWristX = results[0].pose.rightWrist.x;
+    rightWristY = results[0].pose.rightWrist.y;
+    rightWristscore = results[0].pose.keypoints[10].score;
+    console.log(results);
+    console.log("Right Wrist X = " + rightWristX + ", Right Wrist Y = " + rightWristY + " , Right Wrist Score = " + rightWristscore);
+  }
 }
 function modelLoaded()
 {
@@ -75,6 +88,12 @@ function draw(){
    
    //function move call which in very important
     move();
+    if(rightWristscore > 0.2)
+    {
+      fill("red");
+      stroke("#00e6ff");
+      circle(rightWristX,rightWristY,20);
+    }
 }
 
 
